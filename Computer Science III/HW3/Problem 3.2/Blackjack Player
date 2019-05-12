@@ -1,0 +1,340 @@
+import java.util.Random;
+import java.util.ArrayList;
+
+public class Chris_Falco_HW3_Problem2_Hand
+{
+   static String[] card = new String[]{"A","2","3","4","5","6","7","8","9","10","J","Q","K"}; 
+   static String[] suit = new String[]{"D", "H", "C", "S"}; //diamonds, hearts, clubs, spades
+   static ArrayList<String> usedCards = new ArrayList<String>();
+   
+   static ArrayList<String> reds = new ArrayList<String>();
+   static ArrayList<String> blacks = new ArrayList<String>();
+   
+   static ArrayList<String> playerHand = new ArrayList<String>();
+   static String firstHand = "";
+  
+   static int handValue = 0;
+   static int dealerValue = 0;
+   static int tempHandValue = 0;
+   
+   static int ace = 0;
+   static int counter = 0;
+   
+   
+   public static void main(String[] args)
+   {
+      
+      for(int i = 1; i <= 2 ; i++)
+            shuffle();
+      
+      System.out.println("************************************");
+      printHand();
+      System.out.println();
+      printValue();
+      System.out.println();
+      dealerValue = generateDealer();
+      System.out.println("Dealer Value: " + dealerValue);
+      Chris_Falco_HW3_Problem2_BlackjackHand blackJack = new Chris_Falco_HW3_Problem2_BlackjackHand(firstHand);
+      System.out.println("************************************");
+      addCard();
+            
+   }
+   
+   public static void shuffle()
+   {
+      Random cards = new Random();
+      Random suits = new Random();
+      int cardNumber = cards.nextInt(13);
+      int suitNumber = suits.nextInt(4);
+      String currentCard = card[cardNumber]+suit[suitNumber]; 
+      
+      
+      
+      if(counter == 0)
+      {
+         colorChecker(currentCard);
+      }
+         
+      else if(counter > 0 && checkCard(currentCard) == true)
+         shuffle();
+         
+      else if(counter > 0 && checkCard(currentCard)== false)
+      {
+         colorChecker(currentCard);
+      }
+         
+      usedCards.add(currentCard);
+      counter++;
+   }
+   public static boolean checkCard(String currentCard)
+   {
+      if(usedCards.contains(currentCard))
+         return true;
+      else
+         return false;
+   }
+   
+   public static void colorChecker(String currentCard)
+   {
+      for(int i = 0; i < currentCard.length(); i++)
+      {
+         if(currentCard.charAt(i) == 'D' || currentCard.charAt(i) == 'H')
+            reds.add(currentCard);
+            
+         else if(currentCard.charAt(i) == 'C' || currentCard.charAt(i) == 'S')
+            blacks.add(currentCard);
+      }
+   }
+   
+   public static void sortReds()
+    {
+       for(int i=0;i<reds.size();i++)
+       {
+          for(int j=i+1;j<reds.size();j++)
+          {
+             String number;
+             char currentCardNumber = reds.get(j).charAt(0);
+
+             switch(currentCardNumber)
+             {
+                case '1':
+                   number = "10";
+                   break;
+
+                case 'A':
+                   number = "1";
+                   break;
+
+                case 'J':
+                   number = "20";
+                   break;
+
+                case 'Q':
+                   number = "30";
+                   break;
+
+                case 'K':
+                   number = "40";
+                   break;
+
+                default: 
+                   number = String.valueOf(currentCardNumber);
+             }
+
+             String number1;
+             char currentCardNumber1 = reds.get(i).charAt(0);
+
+             switch(currentCardNumber1)
+             {
+                case '1':
+                   number1 = "10";
+                   break;
+
+                case 'A':
+                   number1 = "1";
+                   break;
+
+                case 'J':
+                   number1 = "20";
+                   break;
+
+                case 'Q':
+                   number1 = "30";
+                   break;
+
+                case 'K':
+                   number1 = "40";
+                   break;
+
+                default: 
+                   number1 = String.valueOf(currentCardNumber1);
+             }
+
+             if (Integer.parseInt(number) < Integer.parseInt(number1)) 
+             {
+                String temp = reds.get(i);
+                reds.set(i,reds.get(j));
+                reds.set(j, temp);
+             }           
+          }
+       }
+    }
+   
+   public static void sortBlacks()
+      {
+         for(int i=0;i<blacks.size();i++)
+         {
+            for(int j=i+1;j<blacks.size();j++)
+            {
+               String number;
+               char currentCardNumber = blacks.get(j).charAt(0);
+            
+               switch(currentCardNumber)
+               {
+                  case '1':
+                     number = "10";
+                     break;
+                     
+                  case 'A':
+                     number = "1";
+                     break;
+                     
+                  case 'J':
+                     number = "20";
+                     break;
+                   
+                  case 'Q':
+                     number = "30";
+                     break;
+                    
+                  case 'K':
+                     number = "40";
+                     break;
+               
+                  default: 
+                     number = String.valueOf(currentCardNumber);
+               }
+            
+               String number1;
+               char currentCardNumber1 = blacks.get(i).charAt(0);
+            
+               switch(currentCardNumber1)
+               {
+                  case '1':
+                     number1 = "10";
+                     break;
+                     
+                  case 'A':
+                     number1 = "1";
+                     break;
+                     
+                  case 'J':
+                     number1 = "20";
+                     break;
+                   
+                  case 'Q':
+                     number1 = "30";
+                     break;
+                    
+                  case 'K':
+                     number1 = "40";
+                     break;
+               
+                  default: 
+                     number1 = String.valueOf(currentCardNumber1);
+               }
+               
+               if (Integer.parseInt(number) < Integer.parseInt(number1)) 
+               {
+                  String temp = blacks.get(i);
+                  blacks.set(i,blacks.get(j));
+                  blacks.set(j, temp);
+               }           
+            }
+         }
+      }
+   
+    public static void printHand()
+   {
+       sortReds();
+       sortBlacks();
+       
+       for(int i = 0; i < reds.size(); i++)
+            playerHand.add(reds.get(i));
+       
+       for(int i = 0; i < blacks.size(); i++)
+            playerHand.add(blacks.get(i));
+       
+       System.out.print("Player Hand: ");
+       
+       for(int i = 0; i < playerHand.size(); i++)
+       {
+            System.out.print(playerHand.get(i) + "  ");
+            firstHand+=playerHand.get(i)+" ";
+       }
+      
+   }
+
+   public static void printValue()
+   {
+       ace = 0;
+       
+       for (int i = 0; i < playerHand.size(); i++) 
+       {
+            String temp = playerHand.get(i);
+            char tempCh = temp.charAt(0);
+            int tempInt = 0;
+            
+            switch (tempCh) {
+            case 'A':  tempInt = 11;
+                     break;
+            case '2':  tempInt = 2;
+                     break;
+            case '3':  tempInt = 3;
+                     break;
+            case '4':  tempInt = 4;
+                     break;
+            case '5':  tempInt = 5;
+                     break;
+            case '6':  tempInt = 6;
+                     break;
+            case '7':  tempInt = 7;
+                     break;
+            case '8':  tempInt = 8;
+                     break;
+            case '9':  tempInt = 9;
+                     break;
+            case '1':  tempInt = 10;
+                     break;
+            case 'J':  tempInt = 10;
+                     break;
+            case 'Q':  tempInt = 10;
+                     break;
+            case 'K':  tempInt = 10;
+                     break;
+            default: System.out.println("something is wrong");
+                    break;
+        }
+            if(ace > 0 && tempInt == 11)
+                tempInt = 1;
+            else if(ace == 0 && tempInt == 11 && tempHandValue + 11 > 21)
+                tempInt = 1;
+            else if(ace == 0 && tempInt == 11)
+                ace++;
+            
+            handValue += tempInt;
+       }
+       
+       System.out.print("Player Value: " + handValue);
+   }
+   
+   public static int generateDealer()
+   {
+       Random dealer = new Random();
+       int dealerValue = dealer.nextInt(6) + 16;
+       
+       return dealerValue;
+   }
+   
+   public static void addCard()
+   {
+       while (handValue <= dealerValue && handValue != 21)
+       {
+           playerHand.clear();
+           tempHandValue = handValue;
+           handValue = 0;
+           
+           shuffle();
+           printHand();
+           System.out.println();
+           printValue();
+           System.out.println();
+           System.out.println("Dealer Value: " + dealerValue);
+           System.out.println("************************************");
+       }
+       
+   }
+   
+   
+   
+}
