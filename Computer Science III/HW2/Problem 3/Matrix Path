@@ -1,0 +1,940 @@
+public class Chris_Falco_HW2_Problem3 
+{
+   static int max = 0;
+   static int finMax = 0;
+   static int min = 1000000;
+   static int finMin = 1000000;
+   static int iStep1 = 0;
+   static int jStep1 = 0;
+   static int iStep2 = 0;
+   static int jStep2 = 0;
+   
+   static int[][] chart = { {8, 15, 6, 9}, 
+                            {14, 13, 2, 18}, 
+                            {20, 19, 18, 5}, 
+                            {3, 15, 17, 6} 
+                          };
+   
+   public static void main(String args[])
+   {
+      for(int i = 0; i < 4; i++)
+      {
+         for(int j = 0; j < 4; j++)
+         {
+            int a = i + 1;
+            int b = i - 1;
+            int c = j + 1;
+            int d = j - 1;
+            
+            iStep1 = i;
+            jStep1 = j;
+            
+            if( i == 0 && j == 0)   // combo 1
+            {
+               int x = step2(a, j) + chart[i][j];
+               int y = step2(i, c) + chart[i][j];
+               
+               if ( x >= max && x >= y)
+                  max = x;
+               if ( y >= max && y >= x)
+                  max = y;
+            }
+            
+            if( i == 0 && (j == 1 || j == 2))  // combo 2 
+            {
+               int x = step2(a, j) + chart[i][j];
+               int y = step2(i, c) + chart[i][j];
+               int z = step2(i, d) + chart[i][j];
+               
+               
+               if ( x >= max && x >= y && x >= z)
+                  max = x;
+               if ( y >= max && y >= x && y >= z)
+                  max = y;
+               if ( z >= max && z >= x && z >= y)
+                  max = z;
+            }
+            
+            if( i == 0 && j == 3)   // combo 3
+            {
+               int x = step2(a, j) + chart[i][j];
+               int y = step2(i, d) + chart[i][j];
+               
+               if ( x >= max && x >= y)
+                  max = x;
+               if ( y >= max && y >= x)
+                  max = y;
+            }
+            
+            if( (i == 1 || i == 2) && j == 0)  // combo 4
+            {
+               int x = step2(a, j) + chart[i][j];
+               int y = step2(b, j) + chart[i][j];
+               int z = step2(i, c) + chart[i][j];
+               
+               
+               if ( x >= max && x >= y && x >= z)
+                  max = x;
+               if ( y >= max && y >= x && y >= z)
+                  max = y;
+               if ( z >= max && z >= x && z >= y)
+                  max = z;
+            }
+            
+            if( (i == 1 || i == 2) && ( j == 1 || j == 2))  // combo 5
+            {
+               int w = step2(a, j) + chart[i][j];
+               int x = step2(b, j) + chart[i][j];
+               int y = step2(i, c) + chart[i][j];
+               int z = step2(i, d) + chart[i][j];
+               
+               if ( w >= max && w >= x && w >= y && w >= z)
+                  max = w;
+               if ( x >= max && x >= w && x >= y && x >= z)
+                  max = x;
+               if ( y >= max && y >= w && y >= x && y >= z)
+                  max = y;
+               if ( z >= max && z >= w && z >= x && z >= y)
+                  max = z;
+            }
+            
+            if( (i == 1 || i == 2) && j == 3)  // combo 6
+            {
+               int x = step2(a, j) + chart[i][j];
+               int y = step2(b, j) + chart[i][j];
+               int z = step2(i, d) + chart[i][j];
+               
+               
+               if ( x >= max && x >= y && x >= z)
+                  max = x;
+               if ( y >= max && y >= x && y >= z)
+                  max = y;
+               if ( z >= max && z >= x && z >= y)
+                  max = z;
+            }
+            
+            if( i == 3 && j == 0)   // combo 7
+            {
+               int x = step2(b, j) + chart[i][j];
+               int y = step2(i, c) + chart[i][j];
+               
+               if ( x >= max && x >= y)
+                  max = x;
+               if ( y >= max && y >= x)
+                  max = y;
+            }
+            
+            if( i == 3 && (j == 1 || j == 2))  // combo 8
+            {
+               int x = step2(b, j) + chart[i][j];
+               int y = step2(i, c) + chart[i][j];
+               int z = step2(i, d) + chart[i][j];
+               
+               
+               if ( x >= max && x >= y && x >= z)
+                  max = x;
+               if ( y >= max && y >= x && y >= z)
+                  max = y;
+               if ( z >= max && z >= x && z >= y)
+                  max = z;
+            }
+            
+            if( i == 3 && j == 3)   // combo 9
+            {
+               int x = step2(b, j) + chart[i][j];
+               int y = step2(i, d) + chart[i][j];
+               
+               if ( x >= max && x >= y)
+                  max = x;
+               if ( y >= max && y >= x)
+                  max = y;
+            }
+            
+            if (max >= finMax)
+                finMax = max;
+            
+            max = 0;
+         }
+      }
+      
+      System.out.println("The highest sum of 4 connected numbers is: " + finMax);
+      
+      for(int i = 0; i < 4; i++)
+      {
+         for(int j = 0; j < 4; j++)
+         {
+            int a = i + 1;
+            int b = i - 1;
+            int c = j + 1;
+            int d = j - 1;
+            
+            iStep1 = i;
+            jStep1 = j;
+            
+            if( i == 0 && j == 0)   // combo 1
+            {
+               int x = minStep2(a, j) + chart[i][j];
+               int y = minStep2(i, c) + chart[i][j];
+               
+               if (x <= y)
+                  min = x;
+               if (  y <= x)
+                  min = y;
+            }
+            
+            if( i == 0 && (j == 1 || j == 2))  // combo 2 
+            {
+               int x = minStep2(a, j) + chart[i][j];
+               int y = minStep2(i, c) + chart[i][j];
+               int z = minStep2(i, d) + chart[i][j];
+               
+               
+               if (x <= y && x <= z)
+                  min = x;
+               if (y <= x && y <= z)
+                  min = y;
+               if (z <= x && z <= y)
+                  min = z;
+            }
+            
+            if( i == 0 && j == 3)   // combo 3
+            {
+               int x = minStep2(a, j) + chart[i][j];
+               int y = minStep2(i, d) + chart[i][j];
+               
+               if (x <= y)
+                  min = x;
+               if (y <= x)
+                  min = y;
+            }
+            
+            if( (i == 1 || i == 2) && j == 0)  // combo 4
+            {
+               int x = minStep2(a, j) + chart[i][j];
+               int y = minStep2(b, j) + chart[i][j];
+               int z = minStep2(i, c) + chart[i][j];
+               
+               
+               if ( x <= y && x <= z)
+                  min = x;
+               if (y <= x && y <= z)
+                  min = y;
+               if (z <= x && z <= y)
+                  min = z;
+            }
+            
+            if( (i == 1 || i == 2) && ( j == 1 || j == 2))  // combo 5
+            {
+               int w = minStep2(a, j) + chart[i][j];
+               int x = minStep2(b, j) + chart[i][j];
+               int y = minStep2(i, c) + chart[i][j];
+               int z = minStep2(i, d) + chart[i][j];
+               
+               if (  w <= x && w <= y && w <= z)
+                  min = w;
+               if (x <= w && x <= y && x <= z)
+                  min = x;
+               if (y <= w && y <= x && y <= z)
+                  min = y;
+               if (z <= w && z <= x && z <= y)
+                  min = z;
+            }
+            
+            if( (i == 1 || i == 2) && j == 3)  // combo 6
+            {
+               int x = minStep2(a, j) + chart[i][j];
+               int y = minStep2(b, j) + chart[i][j];
+               int z = minStep2(i, d) + chart[i][j];
+               
+               
+               if (x <= y && x <= z)
+                  min = x;
+               if (y <= x && y <= z)
+                  min = y;
+               if (z <= x && z <= y)
+                  min = z;
+            }
+            
+            if( i == 3 && j == 0)   // combo 7
+            {
+               int x = minStep2(b, j) + chart[i][j];
+               int y = minStep2(i, c) + chart[i][j];
+               
+               if (x <= y)
+                  min = x;
+               if (  y <= x)
+                  min = y;
+            }
+            
+            if( i == 3 && (j == 1 || j == 2))  // combo 8
+            {
+               int x = minStep2(b, j) + chart[i][j];
+               int y = minStep2(i, c) + chart[i][j];
+               int z = minStep2(i, d) + chart[i][j];
+               
+               
+               if (x <= y && x <= z)
+                  min = x;
+               if (y <= x && y <= z)
+                  min = y;
+               if (z <= x && z <= y)
+                  min = z;
+            }
+            
+            if( i == 3 && j == 3)   // combo 9
+            {
+               int x = minStep2(b, j) + chart[i][j];
+               int y = minStep2(i, d) + chart[i][j];
+               
+               if (x <= y)
+                  min = x;
+               if (y <= x)
+                  min = y;
+            }
+            
+            if (min <= finMin)
+                finMin = min;
+            
+            min = 1000000;
+         }
+      }
+      
+      
+      System.out.println("The lowest sum of 4 connected numbers is: " + finMin);
+      
+   }
+   
+   public static int step2(int i, int j)
+   {
+        int a = i + 1;
+        int b = i - 1;
+        int c = j + 1;
+        int d = j - 1;
+        
+        iStep2 = i;
+        jStep2 = j;
+   
+        if( i == 0 && j == 0)   // combo 1
+        {
+           int x = step3(a, j) + chart[i][j];
+           int y = step3(i, c) + chart[i][j];
+
+           if ( x >= max && x >= y)
+              max = x;
+           if ( y >= max && y >= x)
+              max = y;
+
+           return max;
+        }
+
+        if( i == 0 && (j == 1 || j == 2))  // combo 2 
+        {
+           int x = step3(a, j) + chart[i][j];
+           int y = step3(i, c) + chart[i][j];
+           int z = step3(i, d) + chart[i][j];
+
+
+           if ( x >= max && x >= y && x >= z)
+              max = x;
+           if ( y >= max && y >= x && y >= z)
+              max = y;
+           if ( z >= max && z >= x && z >= y)
+              max = z;
+
+           return max;
+        }
+
+        if( i == 0 && j == 3)   // combo 3
+        {
+           int x = step3(a, j) + chart[i][j];
+           int y = step3(i, d) + chart[i][j];
+
+           if ( x >= max && x >= y)
+              max = x;
+           if ( y >= max && y >= x)
+              max = y;
+
+           return max;
+        }
+
+        if( (i == 1 || i == 2) && j == 0)  // combo 4
+        {
+           int x = step3(a, j) + chart[i][j];
+           int y = step3(b, j) + chart[i][j];
+           int z = step3(i, c) + chart[i][j];
+
+
+           if ( x >= max && x >= y && x >= z)
+              max = x;
+           if ( y >= max && y >= x && y >= z)
+              max = y;
+           if ( z >= max && z >= x && z >= y)
+              max = z;
+
+           return max;
+        }
+
+        if( (i == 1 || i == 2) && ( j == 1 || j == 2))  // combo 5
+        {
+           int w = step3(a, j) + chart[i][j];
+           int x = step3(b, j) + chart[i][j];
+           int y = step3(i, c) + chart[i][j];
+           int z = step3(i, d) + chart[i][j];
+
+           if ( w >= max && w >= x && w >= y && w >= z)
+              max = w;
+           if ( x >= max && x >= w && x >= y && x >= z)
+              max = x;
+           if ( y >= max && y >= w && y >= x && y >= z)
+              max = y;
+           if ( z >= max && z >= w && z >= x && z >= y)
+              max = z;
+
+           return max;
+        }
+
+        if( (i == 1 || i == 2) && j == 3)  // combo 6
+        {
+           int x = step3(a, j) + chart[i][j];
+           int y = step3(b, j) + chart[i][j];
+           int z = step3(i, d) + chart[i][j];
+
+
+           if ( x >= max && x >= y && x >= z)
+              max = x;
+           if ( y >= max && y >= x && y >= z)
+              max = y;
+           if ( z >= max && z >= x && z >= y)
+              max = z;
+
+           return max;
+        }
+
+        if( i == 3 && j == 0)   // combo 7
+        {
+           int x = step3(b, j) + chart[i][j];
+           int y = step3(i, c) + chart[i][j];
+
+           if ( x >= max && x >= y)
+              max = x;
+           if ( y >= max && y >= x)
+              max = y;
+
+           return max;
+        }
+
+        if( i == 3 && (j == 1 || j == 2))  // combo 8
+        {
+           int x = step3(b, j) + chart[i][j];
+           int y = step3(i, c) + chart[i][j];
+           int z = step3(i, d) + chart[i][j];
+
+
+           if ( x >= max && x >= y && x >= z)
+              max = x;
+           if ( y >= max && y >= x && y >= z)
+              max = y;
+           if ( z >= max && z >= x && z >= y)
+              max = z;
+
+           return max;
+        }
+
+        if( i == 3 && j == 3)   // combo 9
+        {
+           int x = step3(b, j) + chart[i][j];
+           int y = step3(i, d) + chart[i][j];
+
+           if ( x >= max && x >= y)
+              max = x;
+           if ( y >= max && y >= x)
+              max = y;
+
+           return max;
+        }
+        else
+            return max;
+
+   }
+   
+   public static int step3(int i, int j)
+   {
+        int a = i + 1;
+        int b = i - 1;
+        int c = j + 1;
+        int d = j - 1;
+
+        if(iStep1 == i && jStep1 == j) // checks to make sure you don't return to the last visited space
+            return -1000000;
+        
+        else if( i == 0 && j == 0)   // combo 1
+        {
+           int x = step4(a, j) + chart[i][j];
+           int y = step4(i, c) + chart[i][j];
+
+           if ( x >= max && x >= y)
+              max = x;
+           if ( y >= max && y >= x)
+              max = y;
+
+           return max;
+        }
+
+        else if( i == 0 && (j == 1 || j == 2))  // combo 2 
+        {
+           int x = step4(a, j) + chart[i][j];
+           int y = step4(i, c) + chart[i][j];
+           int z = step4(i, d) + chart[i][j];
+
+
+           if ( x >= max && x >= y && x >= z)
+              max = x;
+           if ( y >= max && y >= x && y >= z)
+              max = y;
+           if ( z >= max && z >= x && z >= y)
+              max = z;
+
+           return max;
+        }
+
+        else if( i == 0 && j == 3)   // combo 3
+        {
+           int x = step4(a, j) + chart[i][j];
+           int y = step4(i, d) + chart[i][j];
+
+           if ( x >= max && x >= y)
+              max = x;
+           if ( y >= max && y >= x)
+              max = y;
+
+           return max;
+        }
+
+        else if( (i == 1 || i == 2) && j == 0)  // combo 4
+        {
+           int x = step4(a, j) + chart[i][j];
+           int y = step4(b, j) + chart[i][j];
+           int z = step4(i, c) + chart[i][j];
+
+
+           if ( x >= max && x >= y && x >= z)
+              max = x;
+           if ( y >= max && y >= x && y >= z)
+              max = y;
+           if ( z >= max && z >= x && z >= y)
+              max = z;
+
+           return max;
+        }
+
+        else if( (i == 1 || i == 2) && ( j == 1 || j == 2))  // combo 5
+        {
+           int w = step4(a, j) + chart[i][j];
+           int x = step4(b, j) + chart[i][j];
+           int y = step4(i, c) + chart[i][j];
+           int z = step4(i, d) + chart[i][j];
+
+           if ( w >= max && w >= x && w >= y && w >= z)
+              max = w;
+           if ( x >= max && x >= w && x >= y && x >= z)
+              max = x;
+           if ( y >= max && y >= w && y >= x && y >= z)
+              max = y;
+           if ( z >= max && z >= w && z >= x && z >= y)
+              max = z;
+
+           return max;
+        }
+
+        else if( (i == 1 || i == 2) && j == 3)  // combo 6
+        {
+           int x = step4(a, j) + chart[i][j];
+           int y = step4(b, j) + chart[i][j];
+           int z = step4(i, d) + chart[i][j];
+
+
+           if ( x >= max && x >= y && x >= z)
+              max = x;
+           if ( y >= max && y >= x && y >= z)
+              max = y;
+           if ( z >= max && z >= x && z >= y)
+              max = z;
+
+           return max;
+        }
+
+        else if( i == 3 && j == 0)   // combo 7
+        {
+           int x = step4(b, j) + chart[i][j];
+           int y = step4(i, c) + chart[i][j];
+
+           if ( x >= max && x >= y)
+              max = x;
+           if ( y >= max && y >= x)
+              max = y;
+
+           return max;
+        }
+
+        else if( i == 3 && (j == 1 || j == 2))  // combo 8
+        {
+           int x = step4(b, j) + chart[i][j];
+           int y = step4(i, c) + chart[i][j];
+           int z = step4(i, d) + chart[i][j];
+
+
+           if ( x >= max && x >= y && x >= z)
+              max = x;
+           if ( y >= max && y >= x && y >= z)
+              max = y;
+           if ( z >= max && z >= x && z >= y)
+              max = z;
+
+           return max;
+        }
+
+        else if( i == 3 && j == 3)   // combo 9
+        {
+           int x = step4(b, j) + chart[i][j];
+           int y = step4(i, d) + chart[i][j];
+
+           if ( x >= max && x >= y)
+              max = x;
+           if ( y >= max && y >= x)
+              max = y;
+
+           return max;
+        }
+        else
+            return 0;
+
+   }
+   
+   public static int step4(int i, int j)
+   {
+      if(iStep2 == i && jStep2 == j) // checks to make sure you don't return to the last visited space
+          return -1000000;
+      else
+      {
+        max = chart[i][j];
+        return max;
+      }
+   }
+   
+   public static int minStep2(int i, int j)
+   {
+        int a = i + 1;
+        int b = i - 1;
+        int c = j + 1;
+        int d = j - 1;
+        
+        iStep2 = i;
+        jStep2 = j;
+   
+        if( i == 0 && j == 0)   // combo 1
+        {
+           int x = minStep3(a, j) + chart[i][j];
+           int y = minStep3(i, c) + chart[i][j];
+
+           if (x <= y)
+              min = x;
+           if (y <= x)
+              min = y;
+
+           return min;
+        }
+
+        if( i == 0 && (j == 1 || j == 2))  // combo 2 
+        {
+           int x = minStep3(a, j) + chart[i][j];
+           int y = minStep3(i, c) + chart[i][j];
+           int z = minStep3(i, d) + chart[i][j];
+
+
+           if (x <= y && x <= z)
+              min = x;
+           if (y <= x && y <= z)
+              min = y;
+           if (z <= x && z <= y)
+              min = z;
+
+           return min;
+        }
+
+        if( i == 0 && j == 3)   // combo 3
+        {
+           int x = minStep3(a, j) + chart[i][j];
+           int y = minStep3(i, d) + chart[i][j];
+
+           if (x <= y)
+              min = x;
+           if (y <= x)
+              min = y;
+
+           return min;
+        }
+
+        if( (i == 1 || i == 2) && j == 0)  // combo 4
+        {
+           int x = minStep3(a, j) + chart[i][j];
+           int y = minStep3(b, j) + chart[i][j];
+           int z = minStep3(i, c) + chart[i][j];
+
+
+           if (x <= y && x <= z)
+              min = x;
+           if (y <= x && y <= z)
+              min = y;
+           if (z <= x && z <= y)
+              min = z;
+
+           return min;
+        }
+
+        if( (i == 1 || i == 2) && ( j == 1 || j == 2))  // combo 5
+        {
+           int w = minStep3(a, j) + chart[i][j];
+           int x = minStep3(b, j) + chart[i][j];
+           int y = minStep3(i, c) + chart[i][j];
+           int z = minStep3(i, d) + chart[i][j];
+
+           if (w <= x && w <= y && w <= z)
+              min = w;
+           if (x <= w && x <= y && x <= z)
+              min = x;
+           if (y <= w && y <= x && y <= z)
+              min = y;
+           if (z <= w && z <= x && z <= y)
+              min = z;
+
+           return min;
+        }
+
+        if( (i == 1 || i == 2) && j == 3)  // combo 6
+        {
+           int x = minStep3(a, j) + chart[i][j];
+           int y = minStep3(b, j) + chart[i][j];
+           int z = minStep3(i, d) + chart[i][j];
+
+
+           if (x <= y && x <= z)
+              min = x;
+           if (y <= x && y <= z)
+              min = y;
+           if (z <= x && z <= y)
+              min = z;
+
+           return min;
+        }
+
+        if( i == 3 && j == 0)   // combo 7
+        {
+           int x = minStep3(b, j) + chart[i][j];
+           int y = minStep3(i, c) + chart[i][j];
+
+           if (x <= y)
+              min = x;
+           if (y <= x)
+              min = y;
+
+           return min;
+        }
+
+        if( i == 3 && (j == 1 || j == 2))  // combo 8
+        {
+           int x = minStep3(b, j) + chart[i][j];
+           int y = minStep3(i, c) + chart[i][j];
+           int z = minStep3(i, d) + chart[i][j];
+
+
+           if (x <= y && x <= z)
+              min = x;
+           if (y <= x && y <= z)
+              min = y;
+           if (z <= x && z <= y)
+              min = z;
+
+           return min;
+        }
+
+        if( i == 3 && j == 3)   // combo 9
+        {
+           int x = minStep3(b, j) + chart[i][j];
+           int y = minStep3(i, d) + chart[i][j];
+
+           if (x <= y)
+              min = x;
+           if (y <= x)
+              min = y;
+
+           return min;
+        }
+        else
+            return min;
+
+   }
+   
+   public static int minStep3(int i, int j)
+   {
+        int a = i + 1;
+        int b = i - 1;
+        int c = j + 1;
+        int d = j - 1;
+
+        if(iStep1 == i && jStep1 == j) // checks to make sure you don't return to the last visited space
+            return 1000000;
+        
+        else if( i == 0 && j == 0)   // combo 1
+        {
+           int x = minStep4(a, j) + chart[i][j];
+           int y = minStep4(i, c) + chart[i][j];
+
+           if (x <= y)
+              min = x;
+           if (y <= x)
+              min = y;
+
+           return min;
+        }
+
+        else if( i == 0 && (j == 1 || j == 2))  // combo 2 
+        {
+           int x = minStep4(a, j) + chart[i][j];
+           int y = minStep4(i, c) + chart[i][j];
+           int z = minStep4(i, d) + chart[i][j];
+
+
+           if (x <= y && x <= z)
+              min = x;
+           if (y <= x && y <= z)
+              min = y;
+           if (z <= x && z <= y)
+              min = z;
+
+           return min;
+        }
+
+        else if( i == 0 && j == 3)   // combo 3
+        {
+           int x = minStep4(a, j) + chart[i][j];
+           int y = minStep4(i, d) + chart[i][j];
+
+           if (x <= y)
+              min = x;
+           if (y <= x)
+              min = y;
+
+           return min;
+        }
+
+        else if( (i == 1 || i == 2) && j == 0)  // combo 4
+        {
+           int x = minStep4(a, j) + chart[i][j];
+           int y = minStep4(b, j) + chart[i][j];
+           int z = minStep4(i, c) + chart[i][j];
+
+
+           if (x <= y && x <= z)
+              min = x;
+           if (y <= x && y <= z)
+              min = y;
+           if (z <= x && z <= y)
+              min = z;
+
+           return min;
+        }
+
+        else if( (i == 1 || i == 2) && ( j == 1 || j == 2))  // combo 5
+        {
+           int w = minStep4(a, j) + chart[i][j];
+           int x = minStep4(b, j) + chart[i][j];
+           int y = minStep4(i, c) + chart[i][j];
+           int z = minStep4(i, d) + chart[i][j];
+
+           if (  w <= x && w <= y && w <= z)
+              min = w;
+           if (x <= w && x <= y && x <= z)
+              min = x;
+           if (y <= w && y <= x && y <= z)
+              min = y;
+           if (z <= w && z <= x && z <= y)
+              min = z;
+
+           return min;
+        }
+
+        else if( (i == 1 || i == 2) && j == 3)  // combo 6
+        {
+           int x = minStep4(a, j) + chart[i][j];
+           int y = minStep4(b, j) + chart[i][j];
+           int z = minStep4(i, d) + chart[i][j];
+
+
+           if (x <= y && x <= z)
+              min = x;
+           if (y <= x && y <= z)
+              min = y;
+           if (z <= x && z <= y)
+              min = z;
+
+           return min;
+        }
+
+        else if( i == 3 && j == 0)   // combo 7
+        {
+           int x = minStep4(b, j) + chart[i][j];
+           int y = minStep4(i, c) + chart[i][j];
+
+           if (x <= y)
+              min = x;
+           if (y <= x)
+              min = y;
+
+           return min;
+        }
+
+        else if( i == 3 && (j == 1 || j == 2))  // combo 8
+        {
+           int x = minStep4(b, j) + chart[i][j];
+           int y = minStep4(i, c) + chart[i][j];
+           int z = minStep4(i, d) + chart[i][j];
+
+
+           if (x <= y && x <= z)
+              min = x;
+           if (y <= x && y <= z)
+              min = y;
+           if (z <= x && z <= y)
+              min = z;
+
+           return min;
+        }
+
+        else if( i == 3 && j == 3)   // combo 9
+        {
+           int x = minStep4(b, j) + chart[i][j];
+           int y = minStep4(i, d) + chart[i][j];
+
+           if (x <= y)
+              min = x;
+           if (y <= x)
+              min = y;
+
+           return min;
+        }
+        else
+            return 1000000;
+
+   }
+   
+   public static int minStep4(int i, int j)
+   {
+      if(iStep2 == i && jStep2 == j) // checks to make sure you don't return to the last visited space
+          return 1000000;
+      else
+      {
+        min = chart[i][j];
+        return min;
+      }
+   }
+}
