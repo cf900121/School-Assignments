@@ -1,0 +1,146 @@
+import java.util.Scanner;
+        
+public class Chris_Falco_HW1 {
+
+    public static void main(String[] args) {
+        
+        // !!!Given Example Solution!!!
+        int [][] userSolution = { {1,8,4,9,6,3,7,2,5}, {5,6,2,7,4,8,3,1,9}, {3,9,7,5,1,2,8,6,4}, {2,3,9,6,5,7,1,4,8}, 
+        {7,5,6,1,8,4,2,9,3}, {4,1,8,2,3,9,6,5,7}, {9,4,1,3,7,6,5,8,2}, {6,2,3,8,9,5,4,7,1}, {8,7,5,4,2,1,9,3,6} }; 
+       
+        int falseChecks = 0;
+        
+        // !!!Comment these two lines out to use the example solution!!!
+        //System.out.println("Enter your Sudoku Solution. Enter each number individually:");
+        // int[][] userSolution = getSolution();
+        
+        //Check 1-9 (Reason I got a 60 instead of 100)
+        for(int i = 0; i < 9; i++)
+        {
+            for(int j = 0; j < 9; j++)
+            {
+               if(userSolution[i][j] > 9 || userSolution[i][j] < 0)
+                  falseChecks++;
+            }
+        }
+        //Check Rows
+        if(checkRows(userSolution) == false)
+            falseChecks++;
+        
+        //Check Columns
+        if(checkCols(userSolution) == false)
+            falseChecks++;
+        
+        //Check Matrix
+        if(checkMatrix(userSolution) == false)
+            falseChecks++;
+        
+        //Valid or Invalid
+        if(falseChecks > 0)
+            System.out.println("FALSE: This Sudoku solution is invalid");
+        else if(falseChecks == 0)
+            System.out.println("TRUE: This Sudoku solution is valid");
+        
+    }
+    
+    public static int[][] getSolution(){
+        
+        Scanner kb = new Scanner(System.in);
+        int[][] solution = new int[9][9];
+        
+        for(int i = 0; i < 9; i++)
+        {
+            for(int j = 0; j < 9; j++)
+                solution[i][j] = kb.nextInt();
+        }
+        
+        return solution;
+    }
+    
+    public static boolean checkRows(int [][] array){
+        
+        int check = 0;
+        
+        for(int i = 0; i < array.length; i++){
+
+            for(int j = 0; j < array.length; j++){
+                
+                for(int k = 1; k < array.length; k++){
+                    if(array[i][j] == array[i][k] && j != k)
+                        check++;
+                }
+            }
+        }
+        
+        if(check > 0)
+            return false;
+        else
+            return true;
+    }
+    
+    public static boolean checkCols(int [][] array){
+        
+        int check = 0;
+        
+        for(int i = 0; i < array.length; i++){
+
+            for(int j = 0; j < array.length; j++){
+                
+                for(int k = 1; k < array.length; k++){
+                    if(array[j][i] == array[j][k] && i != k)
+                        check++;
+                }
+            }
+        }
+        
+        if(check > 0)
+            return false;
+        else
+            return true;
+        
+    }
+    
+    public static boolean checkMatrix(int [][] array){ //converts each 3x3 to a 1x9
+        
+        int check = 0;
+        
+        for(int i = 0; i < 3; i++)
+            for(int j = 0; j < 3; j++)
+            {
+                int[] array2 = new int[9];
+                int k = 0;
+                
+                for(int x = i * 3; x < i * 3 + 3; x++)
+                {
+                    for(int y = j * 3; y < j * 3 + 3; y++)
+                    {
+                        array2[k] = array[x][y];
+                        k++;
+                    }
+                }
+                
+                if(checkMatrix2(array2) == false)
+                    check++;
+            }
+        if(check > 0)
+            return false;
+        else
+            return true;
+    }
+    
+    public static boolean checkMatrix2(int[] tempArray){ //checks each 1x9 matrix
+        
+        int check = 0;
+        
+        for(int i = 0; i < tempArray.length; i++)
+            for(int j = 0; j < tempArray.length; j++)
+                if(tempArray[i] == tempArray[j] && i != j)
+                    check++;
+        
+        if(check > 0)
+            return false;
+        else
+            return true;
+    }
+    
+}
