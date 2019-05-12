@@ -1,0 +1,28 @@
+public class Chris_Falco_HW3_Problem2_BlackjackHand extends Chris_Falco_HW3_Problem2_Hand
+{
+   String blackJack = "";
+   boolean ace = false;
+   boolean faceOrTen = false;
+   public Chris_Falco_HW3_Problem2_BlackjackHand(String firstHand) //constructor
+   { 
+     blackJack = firstHand;
+     
+     for(int i = 0; i<blackJack.length();i++)
+     {
+         if(blackJack.charAt(i) == 'A')
+         {
+            ace = true;
+         }
+         
+         if(blackJack.charAt(i) == 'J' || blackJack.charAt(i) == 'Q' || blackJack.charAt(i) == 'K' || blackJack.charAt(i) == '1')
+         {
+            faceOrTen = true;
+         }
+     }
+     
+     if(ace == true && faceOrTen == true)
+     {
+         System.out.println("**You have Blackjack**");
+     }
+   }
+}
