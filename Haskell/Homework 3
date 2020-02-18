@@ -1,0 +1,61 @@
+{- 
+	Name: Chris Falco
+	Date: 10/15/2019
+	Homework 3
+-}
+
+module Prog3 where
+
+    import Data.Char
+    
+    productLastPart :: Int -> [Int] -> Int
+    productLastPart 0 _ = 0
+    productLastPart x y = product(take x (reverse y))
+
+    init' :: [Int] -> [Int]
+    init' [x] = []
+    init' (x:xs) = take(length xs) (x:xs)
+
+    init'' :: [Int] -> [Int]
+    init'' [x] = []
+    init'' (x:xs) = x : init'' xs
+
+    elemAt :: Int -> [Int] -> Int
+    elemAt i (x:xs)
+        | i == 1    = x
+        | i > 1    = elemAt (i - 1) xs
+
+    numTimes :: Int -> [Int] -> Int
+    numTimes _ [] = 0
+    numTimes n (x:xs)
+        | n == x    = 1 + numTimes n xs
+        | otherwise = numTimes n xs
+
+    lowerFirstLetter :: String -> String
+    lowerFirstLetter [] = []
+    lowerFirstLetter (x:xs) = (toLower x) : xs
+ 
+    nestedParens :: String -> Bool
+    nestedParens [] = True
+    nestedParens [x] = False
+
+    triads :: Int -> [(Int,Int,Int)]
+    triads n = [  (x,y,z)  | x <- [0..n], y <- [0..n], z <- [0..n], (x^2) + (y^2) == (z^2)]
+
+    iSort' :: [(Float, Int, String)] -> [(Float, Int, String)]
+    iSort' [] = []
+    iSort' (x:xs) = ins x (iSort' xs)
+
+    ins :: (Float, Int, String) -> [(Float, Int, String)] -> [(Float, Int, String)]
+    ins x [] = [x]
+    ins (x,y,z) ((i,j,k): xs)
+        | y < j     = (x,y,z) : (i,j,k) : xs
+        |otherwise  = (i,j,k) : ins (x,y,z) xs
+
+    merge :: [Int] -> [Int] -> [Int]
+    merge (x:xs) (y:ys)
+        | x >= y     = x : (merge xs (y:ys))
+        | y >= x     = y : (merge (x:xs) ys)
+    merge [] [] = []
+    merge [] ys = ys
+    merge xs [] = xs
