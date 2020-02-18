@@ -1,0 +1,106 @@
+{- 
+	Name: Chris Falco
+	Date: 10/22/2019
+	Homework 4
+-}
+
+module Prog4 where
+    
+        morerecent :: (Int, Int, Int) -> (Int, Int, Int) -> (Int, Int, Int)
+        morerecent (x, y, z) (a, b, c)
+                | z > c     = (x, y, z)
+                | c > z     = (a, b, c)
+                | y > b     = (x, y, z)
+                | b > y     = (a, b, c)
+                | x > a     = (x, y, z)
+                | a > x     = (a, b, c)
+                | otherwise = (x, y, z)
+
+
+        numInMonth :: [(Int, Int, Int)] -> Int -> Int
+        numInMonth [] _ = 0
+        numInMonth ((x, y, z):xs) n
+                | x == n    = 1 + numInMonth xs n
+                | otherwise = numInMonth xs n
+
+
+        datesInMonth :: [(Int, Int, Int)] -> Int -> [(Int, Int, Int)]
+        datesInMonth [] _ = []
+        datesInMonth ((x, y, z):xs) n
+                | x == n    = (x, y, z) : datesInMonth xs n
+                | otherwise = datesInMonth xs n
+
+
+        month2Str :: (Int, Int, Int) -> String
+        month2Str (x,y,z) = monthHelper x
+
+
+        date2Str :: (Int, Int, Int) -> String
+        date2Str (x, y, z) = (monthHelper x) ++ show y ++ ", " ++ show z
+
+        monthHelper :: Int -> String
+        monthHelper x
+                | x == 1    = "January "
+                | x == 2    = "February " 
+                | x == 3    = "March " 
+                | x == 4    = "April " 
+                | x == 5    = "May " 
+                | x == 6    = "June " 
+                | x == 7    = "July " 
+                | x == 8    = "August " 
+                | x == 9    = "September " 
+                | x == 10   = "October " 
+                | x == 11   = "November " 
+                | x == 12   = "December " 
+
+        monthLookup :: Int -> Int
+        monthLookup x
+                | x <= 31      = 1
+                | x <= 59      = 2
+                | x <= 90      = 3
+                | x <= 120     = 4
+                | x <= 151     = 5
+                | x <= 181     = 6
+                | x <= 212     = 7
+                | x <= 243     = 8
+                | x <= 273     = 9
+                | x <= 304     = 10
+                | x <= 334     = 11
+                | x <= 365     = 12
+
+
+        monthRange :: Int -> Int -> [Int]
+        monthRange x y = [(monthLookup x)..(monthLookup y)]
+
+
+        validDate :: (Int, Int, Int) -> Bool
+        validDate (x, y, z)
+                | y < 1 || y > 31                               = False
+                | (x == 1) && (monthLookup (y) == 1)            = True
+                | (x == 2) && (monthLookup (y + 31) == 2)       = True
+                | (x == 3) && (monthLookup (y + 59) == 3)       = True
+                | (x == 4) && (monthLookup (y + 90) == 4)       = True
+                | (x == 5) && (monthLookup (y + 120) == 5)      = True
+                | (x == 6) && (monthLookup (y + 151) == 6)      = True
+                | (x == 7) && (monthLookup (y + 181) == 7)      = True
+                | (x == 8) && (monthLookup (y + 212) == 8)      = True
+                | (x == 9) && (monthLookup (y + 243) == 9)      = True
+                | (x == 10) && (monthLookup (y + 273) == 10)    = True
+                | (x == 11) && (monthLookup (y + 304) == 11)    = True
+                | (x == 12) && (monthLookup (y + 334) == 12)    = True
+                | otherwise                                     = False
+
+        
+        validLeapDate :: (Int, Int, Int) -> Bool
+        validLeapDate (x, y, z)
+                | x /= 2 || y /= 29                             = False
+                | (z `mod` 400 == 0) || (z `mod` 4 == 0)        = True
+                | otherwise                                     = False
+
+        
+        season :: (Int, Int, Int) -> String
+        season (x, y, z)
+                | (x == 3 && y >= 20) || (x == 6 && y < 20)  || x == 4  || x == 5    = "Spring"
+                | (x == 6 && y >= 21) || (x == 9 && y <= 22)  || x == 7  || x == 8    = "Summer"
+                | (x == 9 && y >= 22) || (x == 12 && y <= 21) || x == 10 || x == 11   = "Fall"
+                | otherwise                                                          = "Winter"
