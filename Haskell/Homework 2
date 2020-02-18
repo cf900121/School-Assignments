@@ -1,0 +1,72 @@
+{- 
+	Name: Chris Falco
+	Date: 09/26/2019
+	Homework 2
+-}
+
+module Prog2 where
+
+threeDifferent :: Integer -> Integer -> Integer -> Bool
+threeDifferent x y z = (not)((x == y) || (y == z) || (x == z))
+
+
+sum' :: Integer -> Integer
+sum' n
+    |n == 1     = n
+    |n > 1      = n + sum'(n-1)
+
+
+abssum :: Integer -> Integer -> Integer
+abssum m n
+    | m == n    = abs(m)
+    | m < n     = abs(m) + abs(abssum (m+1) n)
+
+
+integerSqrt :: Integer -> Integer 
+integerSqrt n = floor(sqrt(fromIntegral n))
+
+
+exponent' :: Integer -> Integer -> Integer
+exponent' b e
+    | e == 0    = 1
+    | e == 1    = b
+    | e > 1     = b * (exponent' b (e - 1))
+
+
+largeSmall :: (Integer, Integer, Integer) -> (Integer, Integer)
+largeSmall (x, y, z) = (maxThree x y z, minThree x y z)
+
+--helper function for largeSmall
+maxThree :: Integer -> Integer -> Integer -> Integer
+maxThree x y z
+       | x >= y && x >= z                         = x
+       | y >= x && y >= z                         = y
+       | otherwise                                = z
+
+--helper function for largeSmall
+minThree :: Integer -> Integer -> Integer -> Integer
+minThree x y z
+        | x <= y && x <= z                         = x
+        | y <= x && y <= z                         = y
+        | otherwise                                = z
+
+
+swap :: (Char, Char, Char, Char) -> (Char, Char, Char, Char)
+swap (w, x, y, z) = (w, y, x, z)
+
+
+negateOdds :: [Integer] -> [Integer]
+negateOdds list = [ helpNegate x | x <- list]
+
+helpNegate :: Integer -> Integer
+helpNegate x
+    | odd x     = x * (-1)
+    | otherwise = x 
+
+matches :: Integer -> [Integer] -> [Integer]
+matches n list = [ x | x <- list, x == n]
+
+
+element :: Integer -> [Integer] -> Bool
+element n list = length(matches n list) /= 0
+
