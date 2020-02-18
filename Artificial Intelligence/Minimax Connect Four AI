@@ -1,0 +1,315 @@
+#Name: Chris Falco
+#Date: 10/31/2019
+#minimax_connectfour.py
+
+import copy
+import time
+import abc
+
+
+class Game(object):
+    """A connect four game."""
+
+    def __init__(self, grid):
+        """Instances differ by their board."""
+        self.grid = copy.deepcopy(grid)  # No aliasing!
+
+    def display(self):
+        """Print the game board."""
+        for row in self.grid:
+            for mark in row:
+                print(mark, end='')
+            print()
+        print()
+
+    def possible_moves(self):
+        """Return a list of possible moves given the current board."""
+        moveList = []
+
+        for j in range(8):
+            if self.grid[0][j] != 'R' and self.grid[0][j] != 'B':
+                moveList.append(j)
+
+        return moveList
+
+    def neighbor(self, col, color):
+        """Return a Game instance like this one but with a move made into the specified column."""
+        newInstance = Game(self.grid)
+        for i in range(8):
+            if self.grid[7 - i][col] != 'R' and self.grid[7 - i][col] != 'B':
+                newInstance.grid[7 - i][col] = color
+                break
+        return newInstance
+
+    def utility(self):
+        """Return the minimax utility value of this game"""
+
+        utility = 0
+        redMiddle = 4
+        blackMiddle = -4
+        redTwoMatch = 2
+        blackTwoMatch = -2
+        redWin = 1000
+        blackWin = -1000
+
+        """Two in a row"""
+        """----------------------------------------------------------"""
+        """Vertical Check"""
+        for i in range(8):
+            for j in range(5):
+                if self.grid[7 - i][j] == self.grid[7 - i][j + 1]:
+                    if self.grid[7 - i][j] == 'R':
+                        utility += redTwoMatch
+                    elif self.grid[7 - i][j] == 'B':
+                        utility -= blackTwoMatch
+
+        """Horizontal Check"""
+        for j in range(8):
+            for i in range(5):
+                if self.grid[7 - i][j] == self.grid[7 - i - 1][j]:
+                    if self.grid[7 - i][j] == 'R':
+                        utility += redTwoMatch
+                    elif self.grid[7 - i][j] == 'B':
+                        utility -= blackTwoMatch
+
+        """Diagonal Up-Right Check"""
+        for i in range(5):
+            for j in range(5):
+                if self.grid[7 - i][j] == self.grid[7 - i - 1][j + 1]:
+                    if self.grid[7 - i][j] == 'R':
+                        utility += redTwoMatch
+                    elif self.grid[7 - i][j] == 'B':
+                        utility -= blackTwoMatch
+
+        """Diagonal Up-Left Check"""
+        for i in range(3, 8):
+            for j in range(3, 8):
+                if self.grid[7 - i][j] == self.grid[7 - i - 1][j - 1]:
+                    if self.grid[7 - i][j] == 'R':
+                        utility += redTwoMatch
+                    elif self.grid[7 - i][j] == 'B':
+                        utility -= blackTwoMatch
+        """----------------------------------------------------------"""
+
+        """redMiddle"""
+        for i in range(8):
+            if self.grid[i][3] == 'R':
+                utility += redMiddle
+            if self.grid[i][4] == 'R':
+                utility += redMiddle
+
+        """blackMiddle"""
+        for i in range(8):
+            if self.grid[i][3] == 'B':
+                utility += blackMiddle
+            if self.grid[i][4] == 'B':
+                utility += blackMiddle
+
+        """Win"""
+        if self.winning_state() == float("inf"):
+            utility += redWin
+
+        """Lose"""
+        if self.winning_state() == float("-inf"):
+            utility -= blackWin
+
+        return utility
+
+        # from random import randrange
+        # return randrange(10)
+
+    def winning_state(self):
+        """Returns float("inf") if Red wins; float("-inf") if Black wins;
+        0 if board full; None if not full and no winner"""
+
+        win = float("inf")
+        lose = float("-inf")
+
+        """Vertical Check"""
+        for i in range(8):
+            for j in range(5):
+                if self.grid[7 - i][j] == self.grid[7 - i][j + 1] and self.grid[7 - i][j] == self.grid[7 - i][j + 2] and self.grid[7 - i][j] == self.grid[7 - i][j + 3]:
+                    if self.grid[7 - i][j] == 'R':
+                        return win
+                    elif self.grid[7 - i][j] == 'B':
+                        return lose
+
+        """Horizontal Check"""
+        for j in range(8):
+            for i in range(5):
+                if self.grid[7 - i][j] == self.grid[7 - i - 1][j] and self.grid[7 - i][j] == self.grid[7 - i - 2][j] and self.grid[7 - i][j] == self.grid[7 - i - 3][j]:
+                    if self.grid[7 - i][j] == 'R':
+                        return win
+                    elif self.grid[7 - i][j] == 'B':
+                        return lose
+
+        """Diagonal Up-Right Check"""
+        for i in range(5):
+            for j in range(5):
+                if self.grid[7 - i][j] == self.grid[7 - i - 1][j + 1] and self.grid[7 - i][j] == self.grid[7 - i - 2][j + 2] and self.grid[7 - i][j] == self.grid[7 - i - 3][j + 3]:
+                    if self.grid[7 - i][j] == 'R':
+                        return win
+                    elif self.grid[7 - i][j] == 'B':
+                        return lose
+
+        """Diagonal Up-Left Check"""
+        for i in range(3, 8):
+            for j in range(3, 8):
+                if self.grid[7 - i][j] == self.grid[7 - i - 1][j - 1] and self.grid[7 - i][j] == self.grid[7 - i - 2][j - 1] and self.grid[7 - i][j] == self.grid[7 - i - 3][j - 3]:
+                    if self.grid[7 - i][j] == 'R':
+                        return win
+                    elif self.grid[7 - i][j] == 'B':
+                        return lose
+
+        check = 0
+        for i in range(8):
+            for j in range(8):
+                if self.grid[i][j] != 'R' and self.grid[i][j] != 'B':
+                    check = check + 1
+        if check == 0:
+            return 0
+
+        return None
+
+
+class Agent(object):
+    """Abstract class, extended by classes RandomAgent, FirstMoveAgent, MinimaxAgent.
+    Do not make an instance of this class."""
+
+    def __init__(self, color):
+        """Agents use either RED or BLACK chips."""
+        self.color = color
+
+    @abc.abstractmethod
+    def move(self, game):
+        """Abstract. Must be implemented by a class that extends Agent."""
+        pass
+
+
+class RandomAgent(Agent):
+    """Naive agent -- always performs a random move"""
+
+    def move(self, game):
+        """Returns a random move"""
+        moveList = game.possible_moves()
+        length = len(moveList)
+
+        from random import randrange
+        randNum = randrange(length)
+
+        move = moveList[randNum]
+        return move
+
+
+class FirstMoveAgent(Agent):
+    """Naive agent -- always performs the first move"""
+
+    def move(self, game):
+        """Returns the first possible move"""
+        moveList = game.possible_moves()
+        move = moveList[0]
+        return move
+
+
+class MinimaxAgent(Agent):
+    """Smart agent -- uses minimax to determine the best move"""
+
+    depth = 0
+
+    def move(self, game):
+        tup = self.minimax(game, 2, True)
+        return tup[0]
+
+    def minimax(self, game, depth, maxingPlayer):
+
+        if(depth == 0):
+            return (None, game.utility())
+
+        if(maxingPlayer == True):
+            maxValue = -1000
+            column = 0
+            for child in game.possible_moves():
+                currentVal = MinimaxAgent.minimax(self, (game.neighbor(child, 'R')), depth - 1, False)[1]
+                if(currentVal > maxValue):
+                    maxValue = currentVal
+                    column = child
+            return column, maxValue
+
+
+        elif(maxingPlayer == False):
+            minValue = 1000
+            column = 0;
+            for child in game.possible_moves():
+                currentVal = MinimaxAgent.minimax(self, (game.neighbor(child, 'B')), depth - 1, True)[1]
+                if (currentVal < minValue):
+                    minValue = currentVal
+                    column = child
+            return column, minValue
+
+
+def tournament(simulations=50):
+    """Simulate connect four games, of a minimax agent playing
+    against a random agent"""
+
+    redwin, blackwin, tie = 0,0,0
+    for i in range(simulations):
+
+        game = single_game(io=False)
+
+        print(i, end=" ")
+        if game.winning_state() == float("inf"):
+            redwin += 1
+        elif game.winning_state() == float("-inf"):
+            blackwin += 1
+        elif game.winning_state() == 0:
+            tie += 1
+
+    print("Red %d (%.0f%%) Black %d (%.0f%%) Tie %d" %
+  (redwin,redwin/simulations*100,blackwin,blackwin/simulations*100,tie))
+
+    return redwin/simulations
+
+
+def single_game(io=True):
+    """Create a game and have two agents play it."""
+
+    game = Game([['-' for i in range(8)] for j in range(8)])   # 8x8 empty board
+    if io:
+        game.display()
+
+    maxplayer = MinimaxAgent('R')
+    minplayer = RandomAgent('B')
+
+    while True:
+
+        m = maxplayer.move(game)
+        game = game.neighbor(m, maxplayer.color)
+        if io:
+            time.sleep(1)
+            game.display()
+
+        if game.winning_state() is not None:
+            break
+
+        m = minplayer.move(game)
+        game = game.neighbor(m, minplayer.color)
+        if io:
+            time.sleep(1)
+            game.display()
+
+        if game.winning_state() is not None:
+            break
+
+    if game.winning_state() == float("inf"):
+        print("RED WINS!")
+    elif game.winning_state() == float("-inf"):
+        print("BLACK WINS!")
+    elif game.winning_state() == 0:
+        print("TIE!")
+
+    return game
+
+
+if __name__ == '__main__':
+    #single_game(io=True)
+    tournament(simulations=50)
