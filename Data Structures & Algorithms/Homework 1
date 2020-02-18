@@ -1,0 +1,89 @@
+import java.util.*;
+public class ChrisFalco_longNumbersLinkedList
+{
+
+  public static void main(String[] args)
+    {
+         Scanner stdIn = new Scanner(System.in);
+         String longNumber;
+         LinkedList mainList = new LinkedList();
+         LinkedList sumList = new LinkedList();
+         LinkedList temp = null;
+        
+        //declare other variables
+         int userValue = 0;
+         int maxWidth = 0;
+         int sum = 0;
+         int carry = 0;
+         
+        //repeatedly input longNumbers, using -1 to indicate that you are done
+         while(userValue >= 0)
+         {
+            System.out.println("Please enter a number");
+            longNumber = stdIn.nextLine();
+            userValue = Integer.parseInt(longNumber);
+
+            if(userValue == -1)
+               break;
+
+            //add a new LinkedList at the beginning of the mainList
+            mainList.addFirst(new LinkedList());
+            
+            //use get(0) to set temp to be this new LinkedList
+            temp = (LinkedList) mainList.get(0);
+            
+            //for each character in your longNumber, subtract 48 to get the digit and then add it
+            //at the beginning of temp
+            for(int i = 0; i < longNumber.length(); i++)
+            {
+               temp.addFirst(longNumber.charAt(i) - 48);
+            }
+            
+            //keep track of maxWidth, the number of digits of the widest longNumber input so far
+            if(longNumber.length() > maxWidth)
+               maxWidth = longNumber.length();
+         }
+
+         System.out.println("\nMainList: " + mainList + "\n");
+         
+         //make maxWidth passes
+         for(int i = 0; i < maxWidth; i++)
+         { 
+            sum = carry;
+            //initialize carry to be 0
+            //in each pass, loop through all of the LinkedLists in mainList
+            for(int j = 0; j < mainList.size(); j++)
+            {
+               //for each one, let temp be the Linked List for one longNumber
+               temp = (LinkedList) mainList.get(j);
+               //if temp is not empty, remove its first entry and add to the sum
+               if(temp.peekFirst() != null)
+                  sum += (int)temp.remove();
+            }
+            
+            //add sum%10 at the beginning of sumList
+            sumList.addFirst(sum % 10);
+            System.out.println("SumList: " + sumList);
+            //set carry equal to sum/10 (integer division
+            carry = sum / 10;
+         }
+         
+         if(carry != 0)
+         {
+            sumList.addFirst(carry);
+            System.out.println("SumList: " + sumList);
+         }
+         
+         //Now ready for output
+         //repeatedly remove one digit from the beginning of sumList until all have been removed
+         
+         System.out.print("\nAnswer: ");
+         
+         int sumListSize = sumList.size();
+         for(int i = 0; i < sumListSize; i++)
+         {
+            System.out.print((int)sumList.remove());
+         }
+         
+    }//end main
+}//end class
