@@ -1,0 +1,67 @@
+{- ##################################
+   Chris Falco
+   Date: 11/14/2019
+   Homework 6
+   ################################## -}
+
+module Prog6 where
+
+data Tree1 = Leaf1 Int
+        | Node1 Int Tree1 Tree1
+
+preorder :: Tree1 -> [Int]
+preorder (Leaf1 a) = [a]
+preorder (Node1 x left right) = [x] ++ preorder left ++ preorder right
+
+postorder :: Tree1 -> [Int]
+postorder (Leaf1 a) = [a]
+postorder (Node1 x left right) = postorder left ++ postorder right ++ [x]
+
+sumPositives :: Tree1 -> Int
+sumPositives xs = sum[ x | x <- (preorder xs), x > 0]
+
+countLeaves :: Tree1 -> Int
+countLeaves (Leaf1 a) = 1
+countLeaves (Node1 x left right) = countLeaves left + countLeaves right
+
+depth :: Tree1 -> Int
+depth (Leaf1 a) = 0
+depth (Node1 x left right) = 1 + (max (depth left)  (depth right))
+
+data Tree2 a = Leaf2 a
+         | Node2 [Tree2 a]
+
+occurs :: Eq a => a -> Tree2 a -> Bool
+occurs x (Leaf2 y)  = x == y
+occurs x (Node2 []) = False
+occurs x (Node2 (y:ys)) = occurs x y || occurs x (Node2 ys)
+
+countInteriorNodes :: Tree2 a -> Int
+countInteriorNodes a = 1 + nodesHelper a
+
+nodesHelper :: Tree2 a -> Int
+nodesHelper (Leaf2 a)  = 0
+nodesHelper (Node2 []) = 0
+nodesHelper (Node2 ((Leaf2 x):xs)) = nodesHelper (Node2 xs)
+nodesHelper (Node2 (x:xs)) = 1 + nodesHelper x + nodesHelper (Node2 xs)
+
+sumTree :: Tree2 Int -> Int
+sumTree (Leaf2 a)      = a
+sumTree (Node2 [])     = 0
+sumTree (Node2 (x:xs)) = sumTree x + sumTree (Node2 xs)
+
+pre2 :: Tree2 a -> [a]
+pre2 (Leaf2 a)      = [a]
+pre2 (Node2 [])     = []
+pre2 (Node2 (x:xs)) = pre2 x ++ pre2 (Node2 xs)
+
+depthK :: Int -> Tree2 a -> [a]
+depthK k (Leaf2 x)
+    |k == 0        = [x]
+    |otherwise     = []
+
+depthK k (Node2 []) = []
+
+depthK k (Node2 (y:ys)) 
+    |k > 0          = depthK (k-1) y ++ depthK (k) (Node2 ys)
+    |otherwise      = []
