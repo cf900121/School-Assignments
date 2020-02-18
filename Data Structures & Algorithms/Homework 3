@@ -1,0 +1,209 @@
+// Chris Falco
+// Assignment 3
+
+import java.io.*;
+import java.util.*;
+
+public class InternetUsers{
+
+   static String combo[] = new String[201];
+   static String country[]= new String[201];
+   static int population[]= new int[201];
+   static String shellCount[]= new String[201];
+   static int shellPop[]= new int[201];
+   static Hashtable <Integer, String> h1 = new Hashtable<Integer, String>(250);
+   
+   public static void separate()throws Exception{
+   
+      Scanner stdln = new Scanner(new File("CountrySortedAlpha.txt"));
+      
+      for(int i= 0; stdln.hasNextLine(); i++)
+      {
+         combo[i] = stdln.nextLine();
+         
+         StringTokenizer st = new StringTokenizer(combo[i]);
+         
+         while(st.hasMoreTokens())
+         {
+            String token = st.nextToken();
+            
+            if(Character.isDigit(token.charAt(0)))
+               population[i] = Integer.parseInt(token);
+               
+            else
+            {
+               if(country[i] == null)
+                  country[i] = token;
+               else
+                  country[i] = country[i] + " " + token;
+            }
+          }
+       }
+       
+      stdln.close();
+    }
+      
+   public static void unsort()throws Exception{
+   
+      int where = 0;
+      Random rand = new Random();
+     
+      PrintWriter out = new PrintWriter("CountryUnsortedAlpha.txt");
+         
+      for(int j = 201; j >= 1; j--)
+      {
+         where = rand.nextInt(j);
+         
+         for(int i = 0; i <= where; i++){
+
+            if(combo[i] == null)
+               where++;
+            
+            if(i == where)
+            {
+               if(!(combo[i] == null))
+               {
+                  out.println(combo[i]);
+                  combo[i] = null;
+               }
+            }
+         }
+      }
+      
+      out.close();
+    }
+   
+   public static void sorting(String[] countryNew, int populationNew[]){
+   
+      int j;
+      
+      for(int gap = countryNew.length /2; gap > 0; gap /= 2) 
+      {
+         for(int i = gap; i < countryNew.length; i++)
+         {
+            String tmp = countryNew[i];
+            int tmp2 = populationNew[i];
+            
+            for(j = i; j >= gap && tmp2 > populationNew[j - gap]; j -= gap)
+            {
+               countryNew[j] = countryNew[j-gap].trim();
+               populationNew[j] = populationNew[j-gap];
+            }
+            
+            countryNew[j] = tmp;
+            populationNew[j] = tmp2;
+            
+         }
+       }
+       
+       for(int i= 0; i < populationNew.length; i++)
+       {
+         shellCount[i] = countryNew[i];
+         shellPop[i] = populationNew[i];
+         
+         System.out.printf("%-30s   %3d\n", shellCount[i], shellPop[i]);
+         
+       }
+    }
+   
+   public static void hashing(){
+   
+      String str;
+      int pop = 0;
+      int hash;
+      
+      for(int a= 0; a < population.length; a++){
+         str = shellCount[a];
+         pop = shellPop[a];
+         char[] ch = shellCount[a].toCharArray();
+         hash = hashing2(ch);
+         hash %= 250;
+         h1.put(hash, shellCount[a]);
+         System.out.printf("%-30s \t %d hash to: %d\n", str, pop, hash);
+
+      }
+    }
+    
+   public static int hashing2(char[] x){
+   
+      int num = 0;
+      
+      for(int bb= 0; bb < x.length; bb++)
+         num += (int)x[bb];
+         
+      if(h1.get(num%250) == null)
+         return num;
+         
+      else{
+         do{
+            num++;
+         }while(h1.get(num %250) != null);
+      }
+      
+      return num;
+    }
+   
+   public static void search(){
+   
+      String search = " ";
+      Scanner kb= new Scanner(System.in);
+      
+      while(!search.equals("-1")){
+         System.out.println("Name of country (case sensitive) - type -1 if done?");
+         search = kb.nextLine();
+         
+         if(search.equals("-1"))
+            break;
+         else{
+            find(search);
+         }
+      }
+      
+      kb.close();
+    }
+    
+   public static void find(String c){
+      int hash = 0;
+      char[] ch= c.toCharArray();
+      
+      for(int in= 0; in< ch.length; in++){
+         hash += (int)ch[in];
+      }
+      
+      try{
+         if(h1.get(hash % 250).equals(c))
+            System.out.println(hash % 250 + ": "+ h1.get(hash % 250));
+            
+         else{
+         
+            do{
+               System.out.println(hash % 250 + ": "+ h1.get(hash % 250));
+               hash++;
+            }while(!h1.get(hash % 250).equals(c));
+            
+            System.out.println(hash % 250 + ": "+ h1.get(hash % 250));
+         }
+      }
+      catch(Exception e){
+         System.out.println("Not found in hash table!");
+      }
+    }
+   
+   public static void main(String[] args)throws Exception{
+      
+      separate();
+      unsort();
+      
+      System.out.println("CountryUnsortedAlpha.txt saved \n");
+        
+      System.out.println("============SORT BY USER PERCENTAGE============== \n");
+      sorting(country, population);
+      
+      System.out.println("============PUT INTO HASH TABLE============== \n");
+      hashing();
+      
+      System.out.println("============SEARCH HASH TABLE============== \n");
+      search();
+      
+   }
+}
