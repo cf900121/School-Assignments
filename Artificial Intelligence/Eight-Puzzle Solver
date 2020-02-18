@@ -1,0 +1,176 @@
+"""
+Chris Falco
+10/06/19
+eight puzzle assignment
+"""
+
+import copy
+import time
+import queue
+
+
+class Puzzle():
+    """A sliding-block puzzle."""
+
+    def __init__(self, grid):
+        """Instances differ by their number configurations."""
+        self.grid = copy.deepcopy(grid)  # No aliasing!
+
+    def display(self):
+        """Print the puzzle."""
+        for row in self.grid:
+            for number in row:
+                print(number, end='')
+            print()
+        print()
+
+    def moves(self):
+        """Return a list of possible moves given the current configuration."""
+
+        """Finds current location"""
+        for i in range(len(self.grid)):
+            for j in range(len(self.grid)):
+                if self.grid[i][j] == ' ':
+                    row = i
+                    column = j
+
+        """List of moves"""
+        moves = []
+
+        """North"""
+        if row - 1 >= 0:
+            moves.append("N")
+        """South"""
+        if row + 1 <= 2:
+            moves.append("S")
+        """East"""
+        if column + 1 <= 2:
+            moves.append("E")
+        """West"""
+        if column - 1 >= 0:
+            moves.append("W")
+
+        return moves
+
+    def neighbor(self, move):
+        """Return a Puzzle instance like this one but with one move made."""
+
+        for x in range(len(move)):
+
+            """Finds current location"""
+            for i in range(len(self.grid)):
+                for j in range(len(self.grid)):
+                    if self.grid[i][j] == ' ':
+                        row = i
+                        column = j
+
+            if move[x] == "N":
+                self.grid[row][column] = self.grid[row - 1][column]
+                self.grid[row - 1][column] = ' '
+            elif move[x] == "S":
+                self.grid[row][column] = self.grid[row + 1][column]
+                self.grid[row + 1][column] = ' '
+            elif move[x] == "E":
+                self.grid[row][column] = self.grid[row][column + 1]
+                self.grid[row][column + 1] = ' '
+            elif move[x] == "W":
+                self.grid[row][column] = self.grid[row][column - 1]
+                self.grid[row][column - 1] = ' '
+
+        return Puzzle(self.grid)
+
+    def h(self, goal):
+        """Compute the distance heuristic from this instance to the goal."""
+        distance = 0
+        currentState = self.grid
+        goalState = goal.grid
+
+        for i in range(len(self.grid)):
+            for j in range(len(self.grid)):
+                current = currentState[i][j]
+                for x in range(len(self.grid)):
+                    for y in range(len(self.grid)):
+                        goal = goalState[x][y]
+                        if current == goal:
+                            distance += abs(x - i) + abs(y - j)
+
+        return distance
+
+
+class Agent():
+    """Knows how to solve a sliding-block puzzle with A* search."""
+
+    def astar(self, puzzle, goal):
+        """Return a list of moves to get the puzzle to match the goal."""
+
+        start = puzzle.grid
+
+        """Make finished an empty set"""
+        finished = []
+
+        """Make frontier an empty priority queue"""
+        try:
+            import Queue as Q
+        except ImportError:
+            import queue as Q
+
+        frontier = Q.PriorityQueue()
+
+        """add start to frontier"""
+        frontier.put((puzzle.h(goal), ""))
+
+        """until frontier is empty"""
+        while not (frontier.empty()):
+            """take the min-priority parent off frontier"""
+            dequeue = (frontier.get())
+            path = dequeue[1]
+
+            puzzle = Puzzle(start)
+            puzzle = puzzle.neighbor(path)
+
+            """stop if parent is the goal"""
+            if puzzle.grid == goal.grid:
+                return list(path)
+            else:
+                finished.append(path)
+
+            """for each move from parent"""
+            moves = puzzle.moves()
+            for x in range(len(moves)):
+                """let child be the neighbor of parent via move"""
+                currentMove = moves[x]
+                puzzle2 = Puzzle(start)
+                newPath = path + moves[x]
+                puzzle2 = puzzle2.neighbor(newPath)
+                child = (puzzle2.h(goal) + len(path), path + currentMove)
+                if self.checkFrontier(child, frontier) == False and child[1] not in finished:
+                    frontier.put(child)
+
+    def checkFrontier(self, child, frontier):
+
+        frontierList = frontier.queue
+        for x in frontierList:
+            if child == x[1]:
+                return True
+        return False
+
+
+def main():
+    """Create a puzzle, solve it with A*, and console-animate."""
+
+    puzzle = Puzzle([[1, 2, 5], [4, 8, 7], [3, 6, ' ']])
+    puzzle.display()
+
+    agent = Agent()
+    goal = Puzzle([[' ', 1, 2], [3, 4, 5], [6, 7, 8]])
+    path = agent.astar(puzzle, goal)
+
+    while path:
+        move = path.pop(0)
+        puzzle = puzzle.neighbor(move)
+        time.sleep(1)
+        puzzle.display()
+
+
+if __name__ == '__main__':
+    main()
