@@ -1,0 +1,111 @@
+{- ##################################
+   Chris Falco
+   Date: 11/21/2019
+   Homework 7
+   ################################## -}
+
+module Prog7 where
+
+unique :: Eq a => [a] -> [a]
+unique [] = []
+unique (x:xs)
+    |x `elem` xs        = unique (unique2 x xs)
+    |otherwise          = x:(unique(unique2 x xs))
+
+unique2 :: Eq a => a -> [a] -> [a]
+unique2 x [] = []
+unique2 x (y:ys)
+    | x == y = unique2 x ys
+    | otherwise = y:(unique2 x ys)
+
+data Expr1 = Val1 Int
+            | Add1 Expr1 Expr1
+            | Sub1 Expr1 Expr1
+
+value1 :: Expr1 -> Int
+value1 (Val1 x) = x
+value1 (Add1 x y) = (value1 x) + (value1 y)
+value1 (Sub1 x y) = (value1 x) - (value1 y)
+
+data Expr2 = Val2 Int
+            | Add2 Expr2 Expr2
+            | Sub2 Expr2 Expr2
+            | Mul2 Expr2 Expr2
+            | Div2 Expr2 Expr2
+
+value2 :: Expr2 -> Maybe Int
+value2 (Val2 x) = Just x
+value2 (Add2 x y) = Just (toInt (value2 x) + toInt (value2 y))
+value2 (Sub2 x y) = Just (toInt (value2 x) - toInt (value2 y))
+value2 (Mul2 x y) = Just (toInt (value2 x) * toInt (value2 y))
+value2 (Div2 x y)
+        |value2 y == (Just 0) = Nothing
+        |otherwise            = Just (toInt (value2 x) `div` toInt (value2 y))
+
+toInt :: Maybe Int -> Int
+toInt (Just n)  = n
+toInt Nothing = 0
+
+instance Show Expr2 where
+    show (Val2 x) = show x
+    show (Add2 x y) = "(" ++ show x ++ "+" ++ show y ++ ")"
+    show (Sub2 x y) = "(" ++ show x ++ "-" ++ show y ++ ")"
+    show (Mul2 x y) = "(" ++ show x ++ "*" ++ show y ++ ")"
+    show (Div2 x y) = "(" ++ show x ++ "/" ++ show y ++ ")"
+
+piglatinize :: String -> String 
+piglatinize [] = ""
+piglatinize str
+        | isVowel (head str)              = str ++ "yay"
+        | otherwise                       = piglatinize2(tail str ++ [(head str)]) ++ "ay"
+
+piglatinize2 :: String -> String 
+piglatinize2 [] = ""
+piglatinize2 str
+        | isVowel (head str)              = str
+        | otherwise                       = piglatinize2(tail str ++ [(head str)])
+
+isVowel :: Char -> Bool
+isVowel x = x `elem`['a','A','e','E','i','I','o','O','u','U']
+
+data Tree a = Leaf a | Node (Tree a) (Tree a)
+
+balanced :: Tree a -> Bool 
+balanced (Leaf x) = True
+balanced (Node left right) = (bal <= 1) && (bal >= (-1))
+   where bal = (countNodes left) - (countNodes right)
+
+countNodes :: Tree a -> Int
+countNodes (Leaf x) = 1
+countNodes (Node left right) = countNodes left + countNodes right
+
+data Expr3 = Val3 Int
+           | Add3 Expr3 Expr3
+           | Sub3 Expr3 Expr3
+           | Mul3 Expr3 Expr3
+           | Div3 Expr3 Expr3
+           | If BExpr3 Expr3 Expr3
+
+data BExpr3 = BoolLit Bool
+            | Or BExpr3 BExpr3
+            | EqualTo Expr3 Expr3
+            | LessThan Expr3 Expr3
+
+bEval :: BExpr3 -> Bool
+bEval (BoolLit True) = True
+bEval (BoolLit False) = False
+bEval (Or x y) = bEval x || bEval y
+bEval (EqualTo b1 b2)= toInt(value3 b1) == toInt(value3 b2)
+bEval (LessThan b1 b2)= toInt(value3 b1) < toInt(value3 b2)
+
+value3 :: Expr3 -> Maybe Int
+value3 (Val3 x) = Just x
+value3 (Add3 x y) = Just (toInt (value3 x) + toInt (value3 y))
+value3 (Sub3 x y) = Just (toInt (value3 x) - toInt (value3 y))
+value3 (Mul3 x y) = Just (toInt (value3 x) * toInt (value3 y))
+value3 (Div3 x y)
+        |value3 y == (Just 0) = Nothing
+        |otherwise            = Just (toInt (value3 x) `div` toInt (value3 y))
+value3 (If b x y)
+        |bEval b        = Just(toInt (value3 x))
+        |otherwise      = Just(toInt (value3 y))
