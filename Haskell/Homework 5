@@ -1,0 +1,93 @@
+{- 
+	Name: Chris Falco
+	Date: 10/29/2019
+	Homework 5
+-}
+
+module Prog5 where
+    
+    reverse' :: [a] -> [a]
+    reverse' x = case x of
+                    []      -> []
+                    [x]     -> [x]
+                    (x:xs)  -> reverse' xs ++ [x]
+
+    isPalindrome :: String -> Bool
+    isPalindrome x = x == (reverse' x)
+
+
+    safeFindAfter :: String -> [String] -> Maybe [String]
+    safeFindAfter _ [] = Nothing 
+    safeFindAfter x (y:ys)
+        | y == x       = Just ys
+        | otherwise    = safeFindAfter x ys
+
+
+    data Set = Set [Char]
+              |EmptySet
+        deriving Show
+
+
+    member :: Char -> Set -> Bool
+    member _ EmptySet = False
+    member x (Set []) = False
+    member x (Set(y:ys))
+        | x == y      = True
+        | otherwise   = member x (Set(ys))
+
+
+    size :: Set -> Int
+    size (EmptySet) = 0
+    size (Set []) = 0
+    size (Set(x)) = length x
+
+
+    add :: Char -> Set -> Set
+    add x (EmptySet) = (Set (x:[]))
+    add x (Set(y))
+        | (member x (Set(y)))  = Set(y)
+        | otherwise            = (Set(x:y))
+
+
+    equal :: Set -> Set -> Bool
+    equal EmptySet EmptySet = True
+    equal EmptySet _        = False
+    equal _ EmptySet        = False
+    equal (Set xs) (Set ys) 
+        |equalHelper xs == equalHelper ys    = True
+        |otherwise                           = False
+
+    equalHelper :: [Char] -> [Char]
+    equalHelper [] = []
+    equalHelper (x:xs) = equalHelper' x (equalHelper xs)
+
+    equalHelper' :: Char -> [Char] -> [Char]
+    equalHelper' x [] = [x]
+    equalHelper' x (y:ys)
+        |x > y      = x:y:ys
+        |otherwise  = y:equalHelper' x ys
+
+    saferemove :: Char -> Set -> Maybe Set
+    saferemove _ EmptySet = Nothing
+    saferemove x (Set []) = Nothing
+    saferemove x (Set ys)
+        | x == head ys        = Just ((Set (tail ys)))
+        | otherwise           = saferemove x (Set (tail ys))
+        
+
+    union :: Set -> Set -> Set 
+    union EmptySet EmptySet = EmptySet
+    union EmptySet (Set xs) = (Set xs)
+    union (Set xs) EmptySet = (Set xs)
+    union (Set xs) (Set ys) = (Set zs)
+        where zs = xs++[y|y<-ys, member y (Set xs)==False]
+
+
+    intersection :: Set -> Set -> Set
+    intersection EmptySet EmptySet = EmptySet
+    intersection EmptySet (Set xs) = EmptySet
+    intersection (Set xs) EmptySet = EmptySet
+    intersection (Set xs) (Set ys) 
+        |zs == []                  = EmptySet
+        |otherwise                 =(Set zs)
+            where zs = [x|x<-xs, member x (Set ys)]
