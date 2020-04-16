@@ -50,22 +50,9 @@ module Prog5 where
 
 
     equal :: Set -> Set -> Bool
-    equal EmptySet EmptySet = True
-    equal EmptySet _        = False
-    equal _ EmptySet        = False
     equal (Set xs) (Set ys) 
-        |equalHelper xs == equalHelper ys    = True
-        |otherwise                           = False
-
-    equalHelper :: [Char] -> [Char]
-    equalHelper [] = []
-    equalHelper (x:xs) = equalHelper' x (equalHelper xs)
-
-    equalHelper' :: Char -> [Char] -> [Char]
-    equalHelper' x [] = [x]
-    equalHelper' x (y:ys)
-        |x > y      = x:y:ys
-        |otherwise  = y:equalHelper' x ys
+        |xs == ys           = True
+        |otherwise         = False
 
     saferemove :: Char -> Set -> Maybe Set
     saferemove _ EmptySet = Nothing
